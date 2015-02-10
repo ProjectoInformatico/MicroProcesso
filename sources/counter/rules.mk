@@ -1,26 +1,46 @@
-sp              := $(sp).x
-dirstack_$(sp)  := $(d)
-d               := $(dir)
+sp              	:= $(sp).x
+dirstack_$(sp)  	:= $(d)
+d               	:= $(dir)
 
-# Synthesis
-TARGET          := $(call SRC_2_BIN, $(d)/system)
+# Synthesis sources definition
+SRC_VHDL_$(d)		 	:= 
+SRC_VERILOG_$(d) 	:= 
 
-# synthesis sources definition
-SRC_VHDL_$(d)				:= 
-SRC_VERILOG_$(d)			:= 
+# Board specific definitions
+PKG_$(d) 				 	:= xc6vlx240t-1-ff1156
+
+# Top module
+TOP_$(d)				 	:= system
 
 include $(d)/sources.mk
 
-CONSTRAINTS_$(d)  := $(d)/synthesis/common.ucf
+CONSTRAINTS_$(d) 	:= $(d)/synthesis/common.ucf
 
-# Fixed
-TARGETS 				+= $(call GEN_TARGETS, $(TARGET))
+# DO NOT MODIFY
 
-$(TARGET).prj			: $(d)/sources.mk $(SRC_VHDL_$(d)) $(SRC_VERILOG_$(d))
-$(TARGET).prj			: VHDL 		:= $(SRC_VHDL_$(d))
-$(TARGET).prj			: VERILOG := $(SRC_VERILOG_$(d))
-$(TARGET).ucf			: $(CONSTRAINTS_$(d))
-$(TARGET).xst			: $(d)/synthesis/system.xst
+TARGET           	:= $(call SRC_2_BIN, $(d)/$(TOP_$(d)))
 
-d               := $(dirstack_$(sp))
-sp              := $(basename $(sp))
+TARGETS 				 	+= $(call GEN_TARGETS, $(TARGET))
+
+$(TARGET).prj						: $(d)/sources.mk $(SRC_VHDL_$(d)) $(SRC_VERILOG_$(d))
+$(TARGET).prj						: VHDL 		:= $(SRC_VHDL_$(d))
+$(TARGET).prj						: VERILOG := $(SRC_VERILOG_$(d))
+$(TARGET).ucf						: $(CONSTRAINTS_$(d))
+                      
+$(TARGET).xst						: PKG := $(PKG_$(d))
+$(TARGET).xst						: TOP := $(TOP_$(d))
+
+$(TARGET)_synthesis.vhd	: TOP := $(TOP_$(d))
+$(TARGET)_synthesis.v  	: TOP := $(TOP_$(d))
+
+$(TARGET)_translate.vhd	: TOP := $(TOP_$(d))
+$(TARGET)_translate.v  	: TOP := $(TOP_$(d))
+
+$(TARGET)_map.vhd				: TOP := $(TOP_$(d))
+$(TARGET)_map.v  				: TOP := $(TOP_$(d))
+
+$(TARGET)_timesim.vhd		: TOP := $(TOP_$(d))
+$(TARGET)_timesim.v  		: TOP := $(TOP_$(d))
+
+d                	:= $(dirstack_$(sp))
+sp               	:= $(basename $(sp))
