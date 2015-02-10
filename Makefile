@@ -51,7 +51,7 @@ targets: $(TARGETS)
 	@./impact.sh $(dir $<)impact.batch $(realpath $<) && cd $(dir $<) && impact \
 		-batch impact.batch &> impact.batch.out
 
-%.bit: %.routed.ncd %.ncd %.ngd %.ngc %.ucf %.prj %.xst
+%.bit: %.routed.ncd
 	@mkdir -p $(dir $@)
 	@echo [BIT] $@ \> $@.out
 	@cd $(dir $@) && bitgen -g LCK_cycle:6 -g Binary:Yes -g DriveDone:Yes \
