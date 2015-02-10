@@ -200,8 +200,7 @@ info:
 	@echo SIMS [$(SIMS)]
 
 clean:
-	@echo [CLR] $(dir $(TARGETS))
-	@echo [CLR] $(SIMS)
+	@echo [CLR]
 	@rm -fr $(dir $(TARGETS)) $(SIMS)
 
 mr-proper: mr-proper-vim
