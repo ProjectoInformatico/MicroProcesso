@@ -190,9 +190,15 @@ simulations: $(SIMS)
 
 run_simulations: $(call SIM_2_RUN, $(SIMS)) 
 
+# Run icarus
 %.run: %.sim
 	@echo [RUN] $< ">" $<.run
 	@cd $(dir $@) && $(realpath $<) > $(realpath $<).run
+
+# Run Isim
+%.runisim: %.isim
+	@echo [RUN] $<
+	@cd $(dir $@) && $(realpath $<) -gui
 
 ################################ INFO & CLEAN ##################################
 
@@ -209,3 +215,8 @@ mr-proper: mr-proper-vim
 mr-proper-vim:
 	@echo [CLR] *.swp
 	@find . | grep .swp | xargs rm -f
+
+################################### ALIASES ####################################
+
+# Cool aliases for autocompletion in the shell
+counter_timesim: binary/counter/system_timesim.runisim
