@@ -195,10 +195,10 @@ run_simulations: $(call SIM_2_RUN, $(SIMS))
 	@echo [RUN] $< ">" $<.run
 	@cd $(dir $@) && $(realpath $<) > $(realpath $<).run
 
-# Run Isim
+# Run Isim with gui
 %.runisim: %.isim
 	@echo [RUN] $<
-	@cd $(dir $@) && $(realpath $<) -gui
+	@cd $(dir $@) && $(realpath $<) -gui &
 
 ################################ INFO & CLEAN ##################################
 
