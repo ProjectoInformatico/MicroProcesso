@@ -7,7 +7,7 @@ SRC_VHDL_$(d)		 	:=
 SRC_VERILOG_$(d) 	:= 
 
 # Board specific definitions
-PKG_$(d) 				 	:= xc6vlx240t-1-ff1156
+PKG_$(d) 				 	:= xc6slx16-3-csg324
 
 # Top module
 TOP_$(d)				 	:= system
