@@ -10,7 +10,7 @@ SRC_VERILOG_$(d) 	:=
 PKG_$(d) 				 	:= xc6slx16-3-csg324
 
 # Top module
-TOP_$(d)				 	:= system
+TOP_$(d)				 	:= alu
 
 include $(d)/sources.mk
 
@@ -34,33 +34,33 @@ $(TARGET).xst						: TOP := $(TOP_$(d))
 # VHDL Simulations example
 
 # Behavorial simulation
-$(TARGET)_beh.prj				: $(d)/rtl/test_bench.vhd
-$(TARGET)_beh.prj				: VHDL:= $(d)/rtl/test_bench.vhd
-$(TARGET)_beh.isim			: TOP := test_bench
+$(TARGET)_beh.prj				: $(d)/rtl/alu_bench.vhd
+$(TARGET)_beh.prj				: VHDL:= $(d)/rtl/alu_bench.vhd
+$(TARGET)_beh.isim			: TOP := alu_bench
 $(TARGET)_beh.isim			: $(TARGET).prj $(TARGET)_beh.prj
 
 # Post-synth simulation
-$(TARGET)_synthesis.prj : $(d)/rtl/test_bench.vhd $(TARGET)_synthesis.vhd
-$(TARGET)_synthesis.prj	: VHDL:= $(d)/rtl/test_bench.vhd $(TARGET)_synthesis.vhd
-$(TARGET)_synthesis.isim: TOP := test_bench
+$(TARGET)_synthesis.prj : $(d)/rtl/alu_bench.vhd $(TARGET)_synthesis.vhd
+$(TARGET)_synthesis.prj	: VHDL:= $(d)/rtl/alu_bench.vhd $(TARGET)_synthesis.vhd
+$(TARGET)_synthesis.isim: TOP := alu_bench
 $(TARGET)_synthesis.isim: $(TARGET)_synthesis.prj
 
 # Post-translate simulation
-$(TARGET)_translate.prj : $(d)/rtl/test_bench.vhd $(TARGET)_translate.vhd
-$(TARGET)_translate.prj	: VHDL:= $(d)/rtl/test_bench.vhd $(TARGET)_translate.vhd
-$(TARGET)_translate.isim: TOP := test_bench
+$(TARGET)_translate.prj : $(d)/rtl/alu_bench.vhd $(TARGET)_translate.vhd
+$(TARGET)_translate.prj	: VHDL:= $(d)/rtl/alu_bench.vhd $(TARGET)_translate.vhd
+$(TARGET)_translate.isim: TOP := alu_bench
 $(TARGET)_translate.isim: $(TARGET)_translate.prj
 
 # Post-map simulation
-$(TARGET)_map.prj 			: $(d)/rtl/test_bench.vhd $(TARGET)_map.vhd
-$(TARGET)_map.prj				: VHDL:= $(d)/rtl/test_bench.vhd $(TARGET)_map.vhd
-$(TARGET)_map.isim			: TOP := test_bench
+$(TARGET)_map.prj 			: $(d)/rtl/alu_bench.vhd $(TARGET)_map.vhd
+$(TARGET)_map.prj				: VHDL:= $(d)/rtl/alu_bench.vhd $(TARGET)_map.vhd
+$(TARGET)_map.isim			: TOP := alu_bench
 $(TARGET)_map.isim			: $(TARGET)_map.prj
 
 # Post-place & route simulation
-$(TARGET)_timesim.prj 	: $(d)/rtl/test_bench.vhd $(TARGET)_timesim.vhd
-$(TARGET)_timesim.prj		: VHDL:= $(d)/rtl/test_bench.vhd $(TARGET)_timesim.vhd
-$(TARGET)_timesim.isim	: TOP := test_bench
+$(TARGET)_timesim.prj 	: $(d)/rtl/alu_bench.vhd $(TARGET)_timesim.vhd
+$(TARGET)_timesim.prj		: VHDL:= $(d)/rtl/alu_bench.vhd $(TARGET)_timesim.vhd
+$(TARGET)_timesim.isim	: TOP := alu_bench
 $(TARGET)_timesim.isim	: $(TARGET)_timesim.prj
 
 # Default simulation model generation
