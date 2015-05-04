@@ -24,14 +24,15 @@ architecture behavior of alu_bench is
   end component;
 
    --Inputs
-   signal Ctrl_Alu : std_logic_vector(2 downto 0) := (others => '0');
-   signal A : std_logic_vector(7 downto 0) := ( others => '1');
-   signal B : std_logic_vector(7 downto 0) := (0 => '1', others => '0');
+   signal Ctrl_Alu : std_logic_vector(2 downto 0) := (0 => '1', others => '0');
+   signal A : std_logic_vector(7 downto 0) := (0 => '1', others => '0');
+   signal B : std_logic_vector(7 downto 0) := ( others => '1');
 
   --Outputs
    signal S : std_logic_vector(7 downto 0);
    signal O : STD_LOGIC;
    signal C : STD_LOGIC;
+   signal N : STD_LOGIC;
  
 begin 
   -- Instantiate the Unit Under Test (UUT)
@@ -41,7 +42,8 @@ begin
           B => B,
           S => S,
           O => O,
-          C => C
+          C => C,
+          N => N
         );
  
 

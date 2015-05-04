@@ -7,6 +7,7 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 -- la clock sur l'alu
 -- le reset sur l'alu
 -- comment on récupère les flags ?
+-- travaille t'on sur des nombres négatif ?
 
 entity alu is
 port(
@@ -28,7 +29,7 @@ begin
     O <= Temp(8);
     C <= Temp(8);
 
-    process(Ctrl_Alu)
+    process(Ctrl_Alu,A,B)
     begin
         N <= '0';
         O <= '0';
@@ -37,6 +38,8 @@ begin
         case Ctrl_Alu is
             when "000" => -- Addition
                 Temp <= (unsigned("0" & A) + unsigned(B));
+            when "001" => -- Soustraction
+                Temp <= ("0" & A) - B;
             when others =>
                 Temp <= (others => '0');
         end case;
