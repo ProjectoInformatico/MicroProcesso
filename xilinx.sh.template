@@ -8,6 +8,7 @@ export LM_LICENSE_FILE="2100@srv-gei-ens1"
 # export LD_PRELOAD="/usr/lib64/libstdc++.so.6 ~/Xilinx/14.7/ISE_DS/common/lib/lin64/libusb-driver.so"
 #export LD_PRELOAD=~/Xilinx/14.7/ISE_DS/common/lib/lin64/libusb-driver.so
 #emulate sh
+export XILINX=${XILINX_BASE}/${XILINX_VERSION}/ISE_DS/ISE
 source ${XILINX_BASE}/${XILINX_VERSION}/ISE_DS/settings32.sh
 #emulate zsh
 # Bug in frequency
