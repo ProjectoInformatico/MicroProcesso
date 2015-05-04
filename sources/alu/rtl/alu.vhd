@@ -22,9 +22,12 @@ port(
 end entity ; -- alu
 
 architecture Behavioral of alu is
-    
+    signal Temp : std_logic_vector(8 downto 0);
 begin
-    
+    S<=Temp(7 downto 0);
+    O <= Temp(8);
+    C <= Temp(8);
+
     process(Ctrl_Alu)
     begin
         N <= '0';
@@ -33,9 +36,9 @@ begin
         C <= '0';
         case Ctrl_Alu is
             when "000" => -- Addition
-                S <= A + B;
+                Temp <= (unsigned("0" & A) + unsigned(B));
             when others =>
-                S <= (others => '0');
+                Temp <= (others => '0');
         end case;
     end process;
 
