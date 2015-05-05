@@ -21,7 +21,8 @@ architecture Behavioral of alu is
 begin
 
     Sortie <= ("0" & A) when Ctrl_Alu = "000" else -- simple copy
-              ("0" & A) + B when Ctrl_Alu = "001" else "000000000"; -- addition
+              ("0" & A) + B when Ctrl_Alu = "001" else -- addition
+              ("0" & A) - B when Ctrl_Alu = "010" else "000000000"; -- substraction
 
     S <= Sortie(7 downto 0);
     Z <= '1' when Sortie(7 downto 0) = X"00" else '0';

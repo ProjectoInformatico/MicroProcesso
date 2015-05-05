@@ -56,6 +56,7 @@ begin
         wait for pause;
             Ctrl_Alu <= "000";
             A <= X"FF";
+            -- N flag
 
         -- test de l'addition
         wait for pause;
@@ -79,7 +80,25 @@ begin
             B <= X"BB";
             -- S must be 54 and C, O flag
 
+        -- test de la soustraction
         wait for pause;
+            Ctrl_Alu <= "010";
+            A <= X"00";
+            B <= X"FF";
+            -- S must be 01 and C flag
+
+        wait for pause;
+            A <= X"FF";
+            -- S must be 00 and Z, O flag
+
+        wait for pause;
+            A <= X"99";
+            B <= X"BB";
+            -- S must be DE and C, N flag
+
+        -- this is the end
+        wait for pause;
+        wait;
     end process;
 
 end architecture ; -- arch
