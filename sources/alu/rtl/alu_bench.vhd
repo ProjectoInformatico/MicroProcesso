@@ -12,6 +12,8 @@ end entity ; -- alu_bench
 architecture behavior of alu_bench is 
   component alu 
   port(
+    CLK : in STD_LOGIC ;
+    RST : in STD_LOGIC ;
     A : in std_logic_vector(7 downto 0) ;
     B : in std_logic_vector(7 downto 0) ;
     Ctrl_Alu : in std_logic_vector(2 downto 0);
@@ -24,7 +26,9 @@ architecture behavior of alu_bench is
   end component;
 
    --Inputs
-   signal Ctrl_Alu : std_logic_vector(2 downto 0) := (0 => '1', others => '0');
+   signal CLK : STD_LOGIC := '0';
+   signal RST : STD_LOGIC := '0';
+   signal Ctrl_Alu : std_logic_vector(2 downto 0) := (0 => '0', others => '0');
    signal A : std_logic_vector(7 downto 0) := (0 => '1', others => '0');
    signal B : std_logic_vector(7 downto 0) := ( others => '1');
 
@@ -33,25 +37,46 @@ architecture behavior of alu_bench is
    signal O : STD_LOGIC;
    signal C : STD_LOGIC;
    signal N : STD_LOGIC;
+   signal Z : STD_LOGIC;
  
+   -- constants
+   constant CLK_period : time := 10 ns;
+
 begin 
   -- Instantiate the Unit Under Test (UUT)
    uut: alu PORT MAP (
+          CLK => CLK,
+          RST => RST,
           Ctrl_Alu => Ctrl_Alu,
           A => A,
           B => B,
           S => S,
           O => O,
           C => C,
-          N => N
+          N => N,
+          Z => Z
         );
  
+   CLK_process : process
+   begin
+        CLK <= not CLK;
+        wait for CLK_period/2;
+   end process;
 
    -- Stimulus process
    stim_proc: process
    begin    
       -- hold reset state for 100 ns.
       
+      wait for CLK_period*10;
+      RST <= '1';
+
+      wait for CLK_period*10;
+      A <= X"00";
+
+      wait for CLK_period*10;
+      A <= X"FF";
+
       wait;
    end process;
 
