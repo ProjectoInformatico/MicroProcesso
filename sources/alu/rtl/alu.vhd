@@ -3,12 +3,6 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_ARITH.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
--- pourquoi y'a 3bits pour le ctrl alu ?
--- la clock sur l'alu
--- le reset sur l'alu
--- comment on récupère les flags ?
--- travaille t'on sur des nombres négatif ?
-
 entity alu is
 port(
     CLK : in STD_LOGIC ;
@@ -27,36 +21,27 @@ end entity ; -- alu
 architecture Behavioral of alu is
     signal Sortie : std_logic_vector(8 downto 0);
 
-    type alu_flags is record 
-        C : STD_LOGIC;
-        O : STD_LOGIC;
-        N : STD_LOGIC;
-        Z : STD_LOGIC;
-    end record;
-
-    signal flags : alu_flags;
-
 begin
     S <= Sortie(7 downto 0);
-    O <= flags.O;
-    C <= flags.C;
-    Z <= flags.Z;
-    N <= '1' when Sortie = X"00" else '0';
+    O <= Sortie(8);
+    C <= '1' when Sortie(8) = '1' and Ctrl_Alu = "001" else '0';
+    N <= '1' when Sortie(8) = '1' and Ctrl_Alu = "010" else '0';
+    Z <= '1' when Sortie = X"00" else '0';
 
     process(CLK)
     begin
         if rising_edge(CLK) then
-            flags <= (others => '0');
             if RST = '0' then
                 Sortie <= (others => '0');
             else 
                 case Ctrl_Alu is
+                    when "001" => -- 1.Addition
+                        Sortie <= ("0" & A) + B;
+                    when "010" => -- 2.Soustraction
+                        Sortie <= ("0" & A) - B;
+                        
                     when others => -- 0.Defaut S=A
                         Sortie <= "0" & A;
-                    --when "001" => -- 1.Addition
-                    --    Temp <= (unsigned("0" & A) + unsigned(B));
-                    --when "010" => -- 2.Soustraction
-                    --    Temp <= ("0" & A) - B;
                 end case;
 
             end if;

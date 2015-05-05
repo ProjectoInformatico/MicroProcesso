@@ -77,6 +77,18 @@ begin
       wait for CLK_period*10;
       A <= X"FF";
 
+      -- Add test
+      wait for CLK_period*10;
+      Ctrl_Alu <= "001";
+      A <= X"01";
+      B <= X"FF";
+
+      -- Sub test
+      wait for CLK_period*10;
+      Ctrl_Alu <= "010";   
+      A <= X"FF";
+      B <= X"FF";
+
       wait;
    end process;
 
