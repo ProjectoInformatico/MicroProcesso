@@ -1,17 +1,22 @@
-library ieee;
-use ieee.std_logic_1164.all;
-
+library ieee ;
+    use ieee.std_logic_1164.all ;
+    use ieee.numeric_std.all ;
 
 entity alu_bench is 
 end entity ; -- alu_bench 
 
 architecture behavior of alu_bench is 
-    component alu 
+    component alu
+
+        generic(
+            SIZE : positive
+        );
+
         port(
-            A : in std_logic_vector(7 downto 0) ;
-            B : in std_logic_vector(7 downto 0) ;
+            A : in unsigned(SIZE-1 downto 0) ;
+            B : in unsigned(SIZE-1 downto 0) ;
             Ctrl_Alu : in std_logic_vector(2 downto 0);
-            S : out std_logic_vector(7 downto 0) ;
+            S : out unsigned(SIZE-1 downto 0) ;
             N : out STD_LOGIC;
             O : out STD_LOGIC;
             Z : out STD_LOGIC;
@@ -19,34 +24,19 @@ architecture behavior of alu_bench is
         );
     end component;
 
-    --Inputs
-    signal Ctrl_Alu : std_logic_vector(2 downto 0);
-    signal A : std_logic_vector(7 downto 0);
-    signal B : std_logic_vector(7 downto 0);
-
-    --Outputs
-    signal S : std_logic_vector(7 downto 0);
-    signal O : STD_LOGIC;
-    signal C : STD_LOGIC;
-    signal N : STD_LOGIC;
-    signal Z : STD_LOGIC;
-     
     -- constants
-    constant pause : time := 50 ns;
+    constant pause : time := 10 ns;
+    constant op_size : integer := 8;
 
-begin 
-  -- Instantiate the Unit Under Test (UUT)
-   uut: alu PORT MAP (
-          Ctrl_Alu => Ctrl_Alu,
-          A => A,
-          B => B,
-          S => S,
-          O => O,
-          C => C,
-          N => N,
-          Z => Z
-        );
+    signal A, B, S : unsigned(op_size-1 downto 0);
+    signal Ctrl_Alu : std_logic_vector(2 downto 0) ;
+    signal N, O, Z, C : std_logic;
 
+begin
+
+   uut: alu
+        generic map(op_size)
+        port map(A, B, Ctrl_Alu, S, N, O, Z, C);
 
     -- Stimulus process
     stim_proc: process
