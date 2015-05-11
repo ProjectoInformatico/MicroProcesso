@@ -4,6 +4,8 @@ d		:= $(dir)
 
 dir	:= $(d)/cores
 include	$(dir)/rules.mk
+dir	:= $(d)/rom
+include	$(dir)/rules.mk
 dir	:= $(d)/bank_register
 include	$(dir)/rules.mk
 dir	:= $(d)/alu
