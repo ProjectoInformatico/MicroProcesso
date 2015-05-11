@@ -2,6 +2,8 @@ sp 		:= $(sp).x
 dirstack_$(sp)	:= $(d)
 d		:= $(dir)
 
+dir	:= $(d)/pipe_line
+include	$(dir)/rules.mk
 dir	:= $(d)/ram
 include	$(dir)/rules.mk
 dir	:= $(d)/rom
