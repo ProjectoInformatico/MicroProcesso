@@ -5,7 +5,7 @@ library ieee ;
 entity alu is
 
     generic(
-        SIZE : positive
+        SIZE : positive := 8
     );
 
     port(
