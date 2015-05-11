@@ -1,7 +1,6 @@
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.STD_LOGIC_ARITH.ALL;
-use IEEE.STD_LOGIC_UNSIGNED.ALL;
+library ieee ;
+    use ieee.std_logic_1164.all ;
+    use ieee.numeric_std.all ;
 
 entity microprocesso is
   port (CLK : in STD_LOGIC);
@@ -62,10 +61,10 @@ begin
   rom1 : rom generic map (rom_size,instruction_size) port map(clk,instruction_pointer,out_rom);
   lidi : pipe_line generic map (instruction_size/4) port map(
         clk => clk,
-        OP_in =>X"00",
-        A_in => X"00",
-        B_in => X"00",
-        C_in => X"00",
+        OP_in => unsigned(out_rom(31 downto 24)),
+        A_in => unsigned(out_rom(23 downto 16)),
+        B_in => unsigned(out_rom(15 downto 8)),
+        C_in => unsigned(out_rom(7 downto 0)),
         A_out => out_lidi.A,
         B_out => out_lidi.B,
         C_out => out_lidi.C,

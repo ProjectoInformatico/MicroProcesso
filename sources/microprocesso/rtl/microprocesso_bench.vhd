@@ -25,8 +25,9 @@
 -- to guarantee that the microprocessobench will bind correctly to the post-implementation 
 -- simulation model.
 --------------------------------------------------------------------------------
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
+library ieee ;
+    use ieee.std_logic_1164.all ;
+    use ieee.numeric_std.all ;
  
 -- Uncomment the following library declaration if using
 -- arithmetic functions with Signed or Unsigned values
