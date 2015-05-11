@@ -103,6 +103,13 @@ begin
             B <= X"02";
             -- S must be 2
 
+        -- test de la division
+        wait for pause;
+            Ctrl_Alu <= "100";
+            A <= X"02";
+            B <= X"02";
+            -- S must be 01 
+
         -- this is the end
         wait for pause;
         wait;
