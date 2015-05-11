@@ -54,7 +54,7 @@ architecture Behavioral of microprocesso is
   -- Instanciation
   signal instruction_pointer : integer := 0;
   signal out_rom : std_logic_vector(instruction_size-1 downto 0);
-  signal out_lidi : out_pipe_line;
+  signal out_lidi, out_diex, out_exmem, out_memre : out_pipe_line;
 
 begin
   -- Composants
@@ -70,5 +70,35 @@ begin
         C_out => out_lidi.C,
         OP_out => out_lidi.OP       
       );
+  diex : pipe_line generic map (instruction_size/4) port map(
+      clk => clk,
+      OP_in => out_lidi.OP,
+      A_in => out_lidi.A,
+      B_in => out_lidi.B,
+      C_in => (others =>'0'),
+      A_out => out_diex.A,
+      B_out => out_diex.B,
+      OP_out => out_diex.OP
+    );
+  exmem : pipe_line generic map (instruction_size/4) port map(
+      clk => clk,
+      OP_in => out_diex.OP,
+      A_in => out_diex.A,
+      B_in => out_diex.B,
+      C_in => (others =>'0'),
+      A_out => out_exmem.A,
+      B_out => out_exmem.B,
+      OP_out => out_exmem.OP
+    );
+  memre : pipe_line generic map (instruction_size/4) port map(
+      clk => clk,
+      OP_in => out_exmem.OP,
+      A_in => out_exmem.A,
+      B_in => out_exmem.B,
+      C_in => (others =>'0'),
+      A_out => out_memre.A,
+      B_out => out_memre.B,
+      OP_out => out_memre.OP
+    );
 
 end Behavioral;
