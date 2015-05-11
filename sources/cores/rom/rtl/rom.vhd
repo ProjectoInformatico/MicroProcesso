@@ -20,7 +20,7 @@ architecture behavioral of rom is
 
 	subtype word is std_logic_vector(WORD_SIZE-1 downto 0);
 	type word_list is array(0 to WORD_COUNT-1) of word;
-	signal words : word_list := (others => x"aaaaaaaa");
+	signal words : word_list := (others => x"06011000");
 
 begin
 

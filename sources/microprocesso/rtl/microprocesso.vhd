@@ -3,7 +3,8 @@ library ieee ;
     use ieee.numeric_std.all ;
 
 entity microprocesso is
-  port (CLK : in STD_LOGIC);
+  port (CLK : in STD_LOGIC;
+   RST : in STD_LOGIC);
 
 end microprocesso;
 
@@ -39,9 +40,29 @@ architecture Behavioral of microprocesso is
     );
   end component;
 
+  component bank_register
+    generic(
+      REG_SIZE : positive;
+      REG_COUNT : positive
+    );
+    port(
+      clk : in std_logic;
+      rst : in std_logic;
+      w : in std_logic;
+      data : in std_logic_vector(REG_SIZE-1 downto 0);
+      reg_a : in integer range 0 to REG_COUNT-1;
+      reg_b : in integer range 0 to REG_COUNT-1;
+      reg_w : in integer range 0 to REG_COUNT-1;
+      qa : out std_logic_vector(REG_SIZE-1 downto 0);
+      qb : out std_logic_vector(REG_SIZE-1 downto 0)
+    );
+  end component;
+
   -- Constants
   constant instruction_size : integer := 32;
   constant rom_size : integer := 256;
+  constant reg_size : integer := 8;
+  constant reg_count : integer := 16;
 
   -- Cablage avec des records
   type out_pipe_line is record
@@ -55,10 +76,11 @@ architecture Behavioral of microprocesso is
   signal instruction_pointer : integer := 0;
   signal out_rom : std_logic_vector(instruction_size-1 downto 0);
   signal out_lidi, out_diex, out_exmem, out_memre : out_pipe_line;
-
+  signal lc : std_logic := '1';
 begin
   -- Composants
   rom1 : rom generic map (rom_size,instruction_size) port map(clk,instruction_pointer,out_rom);
+  
   lidi : pipe_line generic map (instruction_size/4) port map(
         clk => clk,
         OP_in => unsigned(out_rom(31 downto 24)),
@@ -70,6 +92,17 @@ begin
         C_out => out_lidi.C,
         OP_out => out_lidi.OP       
       );
+
+  bank_register1: bank_register generic map(reg_size,reg_count) port map(
+      clk => clk,
+      rst => rst,
+      w => lc,
+      reg_w => to_integer(out_memre.A),
+      reg_a => 0,
+      reg_b => 0,
+      data => std_logic_vector(out_memre.B)
+    );
+
   diex : pipe_line generic map (instruction_size/4) port map(
       clk => clk,
       OP_in => out_lidi.OP,
@@ -100,5 +133,7 @@ begin
       B_out => out_memre.B,
       OP_out => out_memre.OP
     );
+
+  lc <= '1' when out_memre.OP = X"06" else '0';
 
 end Behavioral;

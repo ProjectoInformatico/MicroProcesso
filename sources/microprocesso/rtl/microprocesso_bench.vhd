@@ -42,13 +42,15 @@ ARCHITECTURE behavior OF microprocesso_bench IS
  
     COMPONENT microprocesso
     PORT(
-         CLK : IN  std_logic
+         CLK : IN  std_logic;
+         RST : IN  std_logic
         );
     END COMPONENT;
     
 
    --Inputs
    signal CLK : std_logic := '0';
+   signal RST : std_logic := '0';
 
    -- Clock period definitions
    constant CLK_period : time := 10 ns;
@@ -57,7 +59,8 @@ BEGIN
  
 	-- Instantiate the Unit Under Test (UUT)
    uut: microprocesso PORT MAP (
-          CLK => CLK
+          CLK => CLK,
+          RST => RST
         );
 
    -- Clock process definitions
@@ -75,7 +78,7 @@ BEGIN
    begin		
       -- hold reset state for 100 ns.
       wait for 100 ns;	
-
+      RST <= '1';
       wait for CLK_period*10;
       
       -- insert stimulus here 
