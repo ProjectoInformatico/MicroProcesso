@@ -23,16 +23,19 @@ end entity ; -- alu
 
 architecture Behavioral of alu is
 
-    constant Sortie_zero : unsigned(SIZE-1 downto 0) := (others => '0');
     signal Sortie : unsigned(SIZE downto 0);
+    signal Sortie_mul : unsigned(SIZE*2-1 downto 0);
 begin
 
     Sortie <= ("0" & A) when Ctrl_Alu = "000" else -- simple copy
               ("0" & A) + B when Ctrl_Alu = "001" else -- addition
-              ("0" & A) - B when Ctrl_Alu = "010" else (others => '0'); -- substraction
+              ("0" & A) - B when Ctrl_Alu = "010" else -- substraction
+              Sortie_mul(SIZE downto 0) when Ctrl_Alu = "011" else  (others => '0'); -- multiplication
+
+    Sortie_mul <= A * B when Ctrl_Alu = "011" else  (others => '0');
 
     S <= Sortie(SIZE-1 downto 0);
-    Z <= '1' when Sortie(SIZE-1 downto 0) = Sortie_zero else '0';
+    Z <= '1' when Sortie(SIZE-1 downto 0) = 0 else '0';
     O <= '1' when A(SIZE-1) = B(SIZE-1) and Sortie(SIZE-1) /= A(SIZE-1) else '0'; -- quand on change de signe en add/sub/mult des nombres de même signe
     C <= Sortie(SIZE);
     N <= Sortie(SIZE-1);
