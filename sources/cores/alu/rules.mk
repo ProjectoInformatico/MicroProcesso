@@ -2,42 +2,15 @@ sp              	:= $(sp).x
 dirstack_$(sp)  	:= $(d)
 d               	:= $(dir)
 
-# Synthesis sources definition
-SRC_VHDL_$(d)		 	:= 
-SRC_VERILOG_$(d) 	:= 
-
-# Board specific definitions
-PKG_$(d) 				 	:= xc6slx16-3-csg324
-
-# Top module
-TOP_$(d)				 	:= alu
-
-include $(d)/sources.mk
-
-# Constraints
-CONSTRAINTS_$(d) 	:= $(d)/synthesis/common.ucf
-
-# Target path
-TARGET           	:= $(call SRC_2_BIN, $(d)/$(TOP_$(d)))
-
-# Synthesis rules
-TARGETS 				 	+= $(call GEN_TARGETS, $(TARGET))
-
-$(TARGET).prj						: $(d)/sources.mk $(SRC_VHDL_$(d)) $(SRC_VERILOG_$(d))
-$(TARGET).prj						: VHDL 		:= $(SRC_VHDL_$(d))
-$(TARGET).prj						: VERILOG := $(SRC_VERILOG_$(d))
-$(TARGET).ucf						: $(CONSTRAINTS_$(d))
-                      
-$(TARGET).xst						: PKG := $(PKG_$(d))
-$(TARGET).xst						: TOP := $(TOP_$(d))
+TARGET           	:= $(call SRC_2_BIN, $(d)/alu)
 
 # VHDL Simulations example
 
 # Behavorial simulation
-$(TARGET)_beh.prj				: $(d)/rtl/alu_bench.vhd
-$(TARGET)_beh.prj				: VHDL:= $(d)/rtl/alu_bench.vhd
+$(TARGET)_beh.prj				: $(d)/rtl/alu_bench.vhd $(d)/rtl/alu.vhd
+$(TARGET)_beh.prj				: VHDL:= $(d)/rtl/alu.vhd $(d)/rtl/alu_bench.vhd
 $(TARGET)_beh.isim			: TOP := alu_bench
-$(TARGET)_beh.isim			: $(TARGET).prj $(TARGET)_beh.prj
+$(TARGET)_beh.isim			: $(TARGET)_beh.prj
 
 # Post-synth simulation
 $(TARGET)_synthesis.prj : $(d)/rtl/alu_bench.vhd $(TARGET)_synthesis.vhd
@@ -63,8 +36,13 @@ $(TARGET)_timesim.prj		: VHDL:= $(d)/rtl/alu_bench.vhd $(TARGET)_timesim.vhd
 $(TARGET)_timesim.isim	: TOP := alu_bench
 $(TARGET)_timesim.isim	: $(TARGET)_timesim.prj
 
+# Tests rules
+SIMS 				 	+= $(TARGET)_beh.isim
+
 # Default simulation model generation
 include model.mk
+
+SIMS += $(TARGET)_beh.isim
 
 d                	:= $(dirstack_$(sp))
 sp               	:= $(basename $(sp))
