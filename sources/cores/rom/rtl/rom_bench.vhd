@@ -17,7 +17,7 @@ architecture behavioral of rom_bench is
 		port(
 			clk : in std_logic;
 			addr : in integer range 0 to WORD_COUNT-1;
-			rout_rom : out std_logic_vector(WORD_SIZE-1 downto 0)
+			rout_rom : out unsigned(WORD_SIZE-1 downto 0)
 		);
 
 	end component;
@@ -28,7 +28,7 @@ architecture behavioral of rom_bench is
 
 	signal clk : std_logic := '1';
 	signal addr : integer range 0 to WORD_COUNT-1;
-	signal rout_rom : std_logic_vector(WORD_SIZE-1 downto 0);
+	signal rout_rom : unsigned(WORD_SIZE-1 downto 0);
 
 begin
 

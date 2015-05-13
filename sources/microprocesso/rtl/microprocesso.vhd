@@ -18,7 +18,7 @@ architecture Behavioral of microprocesso is
         port(
             clk : in std_logic;
             addr : in integer range 0 to WORD_COUNT-1;
-            rout_rom : out std_logic_vector(WORD_SIZE-1 downto 0)
+            rout_rom : out unsigned(WORD_SIZE-1 downto 0)
         );
     end component;
 
@@ -73,7 +73,7 @@ architecture Behavioral of microprocesso is
 
     -- Instanciation
     signal instruction_pointer : integer := 0;
-    signal out_rom : std_logic_vector(instruction_size-1 downto 0);
+    signal out_rom : unsigned(instruction_size-1 downto 0);
     signal out_lidi, out_diex, out_exmem, out_memre : out_pipe_line;
     signal lc : std_logic := '1';
 begin
@@ -86,10 +86,10 @@ begin
     generic map(instruction_size/4)
     port map(
         clk => clk,
-        OP_in => unsigned(out_rom(31 downto 24)),
-        A_in => unsigned(out_rom(23 downto 16)),
-        B_in => unsigned(out_rom(15 downto 8)),
-        C_in => unsigned(out_rom(7 downto 0)),
+        OP_in => out_rom(31 downto 24),
+        A_in => out_rom(23 downto 16),
+        B_in => out_rom(15 downto 8),
+        C_in => out_rom(7 downto 0),
         A_out => out_lidi.A,
         B_out => out_lidi.B,
         C_out => out_lidi.C,

@@ -12,13 +12,13 @@ entity rom is
 	port(
 		clk : in std_logic;
 		addr : in integer range 0 to WORD_COUNT-1;
-		rout_rom : out std_logic_vector(WORD_SIZE-1 downto 0)
+		rout_rom : out unsigned(WORD_SIZE-1 downto 0)
 	);
 end entity ; -- rom
 
 architecture behavioral of rom is
 
-	subtype word is std_logic_vector(WORD_SIZE-1 downto 0);
+	subtype word is unsigned(WORD_SIZE-1 downto 0);
 	type word_list is array(0 to WORD_COUNT-1) of word;
 	signal words : word_list := (others => x"06011000");
 
