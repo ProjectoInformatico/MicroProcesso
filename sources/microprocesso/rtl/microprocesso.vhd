@@ -58,32 +58,32 @@ architecture Behavioral of microprocesso is
     end component;
 
     -- Constants
-    constant instruction_size : integer := 32;
-    constant rom_size : integer := 256;
-    constant reg_size : integer := 8;
-    constant reg_count : integer := 16;
+    constant INSTRUCTION_SIZE : integer := 32;
+    constant ROM_SIZE : integer := 256;
+    constant REG_SIZE : integer := 8;
+    constant REG_COUNT : integer := 16;
 
     -- Cablage avec des records
     type out_pipe_line is record
-        A : unsigned(instruction_size/4 -1 downto 0) ;
-        B : unsigned(instruction_size/4 -1 downto 0) ;
-        C : unsigned(instruction_size/4 -1 downto 0) ;
-        OP : unsigned(instruction_size/4 -1 downto 0) ;
+        A : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) ;
+        B : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) ;
+        C : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) ;
+        OP : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) ;
     end record;
 
     -- Instanciation
     signal instruction_pointer : integer := 0;
-    signal out_rom : unsigned(instruction_size-1 downto 0);
+    signal out_rom : unsigned(INSTRUCTION_SIZE-1 downto 0);
     signal out_lidi, out_diex, out_exmem, out_memre : out_pipe_line;
     signal lc : std_logic := '1';
 begin
     -- Composants
     rom1 : rom
-    generic map(rom_size,instruction_size)
+    generic map(ROM_SIZE,INSTRUCTION_SIZE)
     port map(clk,instruction_pointer,out_rom);
 
     lidi : pipe_line
-    generic map(instruction_size/4)
+    generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
         OP_in => out_rom(31 downto 24),
@@ -97,7 +97,7 @@ begin
     );
 
     bank_register1: bank_register
-    generic map(reg_size,reg_count)
+    generic map(REG_SIZE,REG_COUNT)
     port map(
         clk => clk,
         rst => rst,
@@ -109,7 +109,7 @@ begin
     );
 
     diex : pipe_line
-    generic map(instruction_size/4)
+    generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
         OP_in => out_lidi.OP,
@@ -122,7 +122,7 @@ begin
     );
 
     exmem : pipe_line
-    generic map(instruction_size/4)
+    generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
         OP_in => out_diex.OP,
@@ -135,7 +135,7 @@ begin
     );
 
     memre : pipe_line
-    generic map(instruction_size/4)
+    generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
         OP_in => out_exmem.OP,
