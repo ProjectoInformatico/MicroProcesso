@@ -3,9 +3,10 @@ library ieee ;
     use ieee.numeric_std.all ;
 
 entity microprocesso is
-  port (CLK : in STD_LOGIC;
-   RST : in STD_LOGIC);
-
+    port(
+        CLK : in STD_LOGIC;
+        RST : in STD_LOGIC
+    );
 end microprocesso;
 
 architecture Behavioral of microprocesso is
