@@ -65,7 +65,14 @@ architecture Behavioral of microprocesso is
     constant REG_COUNT : integer := 16;
 
     -- Constants with opcode
+    constant OP_ADD : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"01";
+    constant OP_MUL : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"02";
+    constant OP_SOU : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"03";
+    constant OP_DIV : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"04";
+    constant OP_COP : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"05";
     constant OP_AFC : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"06";
+    constant OP_LOAD : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"07";
+    constant OP_STORE : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"08";
 
     -- Cablage avec des records
     type out_pipe_line is record
