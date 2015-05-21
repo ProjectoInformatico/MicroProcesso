@@ -118,9 +118,11 @@ architecture Behavioral of microprocesso is
     signal instruction_pointer : integer := 0;
     signal out_rom : unsigned(INSTRUCTION_SIZE-1 downto 0);
     signal out_lidi, out_diex, in_diex, out_exmem, in_exmem, out_memre, in_memre : in_out_pipe_line;
+    
     signal mux_qa : unsigned(REG_SIZE-1 downto 0);
     signal mux_alu : unsigned(REG_SIZE-1 downto 0);
     signal mux_ram : unsigned(REG_SIZE-1 downto 0);    
+    signal mux_ram_in : unsigned(REG_SIZE-1 downto 0);
 
     signal lc : std_logic := '1';
     signal lc_in_alu : std_logic_vector(2 downto 0);
@@ -166,6 +168,7 @@ begin
                           or out_lidi.OP = OP_MUL 
                           or out_lidi.OP = OP_DIV 
                           or out_lidi.OP = OP_SOU
+                          or out_lidi.OP = OP_STORE
                           else out_lidi.B;
 
     diex : pipe_line
@@ -214,7 +217,7 @@ begin
         OP_out => out_exmem.OP
     );
 
-    lc_ram <= '1' when out_exmem.op = OP_LOAD; 
+    lc_ram <= '0' when out_exmem.op = OP_STORE else '1'; 
 
     ram1: ram
     generic map (RAM_SIZE,REG_SIZE)
@@ -222,13 +225,15 @@ begin
         clk => clk,
         rst => rst,
         rw => lc_ram,
-        addr => to_integer(out_exmem.B), 
-        rin_ram => (others =>'0'),
+        addr => to_integer(mux_ram_in), 
+        rin_ram => out_exmem.B,
         rout_ram => mux_ram
     );
 
     in_memre.B <= mux_ram when out_exmem.op = OP_LOAD 
                   else out_exmem.B;
+
+    mux_ram_in <= out_exmem.A when out_exmem.OP = OP_STORE else out_exmem.B; 
 
     memre : pipe_line
     generic map(INSTRUCTION_SIZE/4)
