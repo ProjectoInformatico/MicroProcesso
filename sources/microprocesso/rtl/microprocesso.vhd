@@ -11,6 +11,7 @@ end microprocesso;
 
 architecture Behavioral of microprocesso is
 
+    -- Description des composants utilisés
     component rom
         generic(
             WORD_COUNT : positive;
@@ -97,6 +98,7 @@ architecture Behavioral of microprocesso is
     constant REG_COUNT : integer := 16;
 
     -- Constants with opcode
+    constant OP_NOP : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"00";
     constant OP_ADD : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"01";
     constant OP_MUL : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"02";
     constant OP_SOU : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"03";
@@ -116,7 +118,7 @@ architecture Behavioral of microprocesso is
 
     -- Instanciation
     signal instruction_pointer : integer := 0;
-    signal out_rom : unsigned(INSTRUCTION_SIZE-1 downto 0);
+    signal out_rom : unsigned(INSTRUCTION_SIZE-1 downto 0) := (others => '0');
     signal out_lidi, out_diex, in_diex, out_exmem, in_exmem, out_memre, in_memre : in_out_pipe_line;
     
     signal mux_qa : unsigned(REG_SIZE-1 downto 0);
@@ -133,6 +135,13 @@ begin
     rom1 : rom
     generic map(ROM_SIZE,INSTRUCTION_SIZE)
     port map(clk,instruction_pointer,out_rom);
+
+    ip_main : process( clk )
+    begin
+      if rising_edge(clk) then
+        instruction_pointer <= instruction_pointer + 1;
+      end if ;
+    end process ; -- rom_main
 
     lidi : pipe_line
     generic map(INSTRUCTION_SIZE/4)
@@ -162,6 +171,7 @@ begin
         data => out_memre.B
     );
 
+    -- mux n°1  
     in_diex.B <= mux_qa when out_lidi.op = OP_COP 
                           or out_lidi.OP = OP_COP 
                           or out_lidi.OP = OP_ADD
