@@ -64,6 +64,9 @@ architecture Behavioral of microprocesso is
     constant REG_SIZE : integer := 8;
     constant REG_COUNT : integer := 16;
 
+    -- Constants with opcode
+    constant OP_AFC : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"06";
+
     -- Cablage avec des records
     type out_pipe_line is record
         A : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) ;
@@ -148,6 +151,6 @@ begin
         OP_out => out_memre.OP
     );
 
-    lc <= '1' when out_memre.OP = X"06" else '0';
+    lc <= '1' when out_memre.OP = OP_AFC else '0';
 
 end Behavioral;
