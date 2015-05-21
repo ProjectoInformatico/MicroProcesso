@@ -17,7 +17,7 @@ architecture behavior of microprocesso_bench is
 	constant period : time := 10 ns;
 
 	signal clk : std_logic := '1';
-	signal rst : std_logic := '0';
+	signal rst : std_logic := '1';
 
 begin
 
@@ -30,7 +30,6 @@ begin
 	begin
 		wait for 100 ns;
 
-		rst <= '1';
 		wait for period*10;
 
 		wait;

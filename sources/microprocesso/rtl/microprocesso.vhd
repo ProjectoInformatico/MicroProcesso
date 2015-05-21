@@ -87,6 +87,8 @@ architecture Behavioral of microprocesso is
     signal out_rom : unsigned(INSTRUCTION_SIZE-1 downto 0);
     signal out_lidi, out_diex, out_exmem, out_memre : out_pipe_line;
     signal lc : std_logic := '1';
+    signal mux_qa : std_logic_vector(REG_SIZE-1 downto 0);
+    signal mux_cop : std_logic_vector(REG_SIZE-1 downto 0);
 begin
     -- Composants
     rom1 : rom
@@ -114,10 +116,13 @@ begin
         rst => rst,
         w => lc,
         reg_w => to_integer(out_memre.A),
-        reg_a => 0,
+        reg_a => to_integer(out_lidi.B),
         reg_b => 0,
+        qa => mux_qa,
         data => std_logic_vector(out_memre.B)
     );
+
+    mux_cop <= mux_qa when out_lidi.op = OP_COP else std_logic_vector(out_lidi.B);
 
     diex : pipe_line
     generic map(INSTRUCTION_SIZE/4)
@@ -125,7 +130,7 @@ begin
         clk => clk,
         OP_in => out_lidi.OP,
         A_in => out_lidi.A,
-        B_in => out_lidi.B,
+        B_in => unsigned(mux_cop),
         C_in => (others =>'0'),
         A_out => out_diex.A,
         B_out => out_diex.B,
@@ -158,6 +163,6 @@ begin
         OP_out => out_memre.OP
     );
 
-    lc <= '1' when out_memre.OP = OP_AFC else '0';
+    lc <= '1' when out_memre.OP = OP_AFC or out_memre.OP = OP_COP else '0';
 
 end Behavioral;

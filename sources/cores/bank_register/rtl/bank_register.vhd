@@ -26,7 +26,7 @@ architecture behavioral of bank_register is
 
 	subtype reg is std_logic_vector(REG_SIZE-1 downto 0);
 	type reg_list is array(0 to REG_COUNT) of reg;
-	signal regs : reg_list;
+	signal regs : reg_list := (1=>x"10", others=>x"00");
 
 begin
 
