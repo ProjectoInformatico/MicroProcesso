@@ -58,6 +58,22 @@ architecture Behavioral of microprocesso is
         );
     end component;
 
+    component alu
+        generic(
+            SIZE : positive
+        );
+        port(
+            A : in unsigned(SIZE-1 downto 0) ;
+            B : in unsigned(SIZE-1 downto 0) ;
+            Ctrl_Alu : in std_logic_vector(2 downto 0);
+            S : out unsigned(SIZE-1 downto 0) ;
+            N : out STD_LOGIC;
+            O : out STD_LOGIC;
+            Z : out STD_LOGIC;
+            C : out STD_LOGIC
+        );
+    end component;
+
     -- Constants
     constant INSTRUCTION_SIZE : integer := 32;
     constant ROM_SIZE : integer := 256;
@@ -75,7 +91,7 @@ architecture Behavioral of microprocesso is
     constant OP_STORE : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) := X"08";
 
     -- Cablage avec des records
-    type out_pipe_line is record
+    type in_out_pipe_line is record
         A : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) ;
         B : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) ;
         C : unsigned(INSTRUCTION_SIZE/4 -1 downto 0) ;
@@ -85,10 +101,11 @@ architecture Behavioral of microprocesso is
     -- Instanciation
     signal instruction_pointer : integer := 0;
     signal out_rom : unsigned(INSTRUCTION_SIZE-1 downto 0);
-    signal out_lidi, out_diex, out_exmem, out_memre : out_pipe_line;
+    signal out_lidi, out_diex, in_diex, out_exmem, in_exmem, out_memre : in_out_pipe_line;
     signal lc : std_logic := '1';
     signal mux_qa : unsigned(REG_SIZE-1 downto 0);
-    signal mux_cop : unsigned(REG_SIZE-1 downto 0);
+    signal mux_alu : unsigned(REG_SIZE-1 downto 0);
+    signal lc_in_alu : std_logic_vector(2 downto 0);
 begin
     -- Composants
     rom1 : rom
@@ -117,12 +134,19 @@ begin
         w => lc,
         reg_w => to_integer(out_memre.A),
         reg_a => to_integer(out_lidi.B),
-        reg_b => 0,
+        reg_b => to_integer(out_lidi.C),
         qa => mux_qa,
+        qb => in_diex.C,
         data => out_memre.B
     );
 
-    mux_cop <= mux_qa when out_lidi.op = OP_COP else out_lidi.B;
+    in_diex.B <= mux_qa when out_lidi.op = OP_COP 
+                          or out_lidi.OP = OP_COP 
+                          or out_lidi.OP = OP_ADD
+                          or out_lidi.OP = OP_MUL 
+                          or out_lidi.OP = OP_DIV 
+                          or out_lidi.OP = OP_SOU
+                          else out_lidi.B;
 
     diex : pipe_line
     generic map(INSTRUCTION_SIZE/4)
@@ -130,12 +154,32 @@ begin
         clk => clk,
         OP_in => out_lidi.OP,
         A_in => out_lidi.A,
-        B_in => mux_cop,
-        C_in => (others =>'0'),
+        B_in => in_diex.B,
+        C_in => in_diex.C,
         A_out => out_diex.A,
         B_out => out_diex.B,
+        C_out => out_diex.C,
         OP_out => out_diex.OP
     );
+
+    lc_in_alu <= std_logic_vector(out_diex.OP(2 downto 0)) when out_diex.OP = OP_ADD or 
+                                                    out_diex.OP = OP_MUL or 
+                                                    out_diex.OP = OP_DIV or 
+                                                    out_diex.OP = OP_SOU;
+
+    alu1 : alu 
+    generic map(REG_SIZE)
+    port map(
+      Ctrl_Alu => lc_in_alu,
+      A => out_diex.B,
+      B => out_diex.C,
+      S => mux_alu
+    );
+
+    in_exmem.B <= mux_alu when out_diex.OP = OP_ADD or 
+                            out_diex.OP = OP_MUL or 
+                            out_diex.OP = OP_DIV or 
+                            out_diex.OP = OP_SOU else out_diex.B;
 
     exmem : pipe_line
     generic map(INSTRUCTION_SIZE/4)
@@ -143,7 +187,7 @@ begin
         clk => clk,
         OP_in => out_diex.OP,
         A_in => out_diex.A,
-        B_in => out_diex.B,
+        B_in => in_exmem.B,
         C_in => (others =>'0'),
         A_out => out_exmem.A,
         B_out => out_exmem.B,
@@ -163,6 +207,11 @@ begin
         OP_out => out_memre.OP
     );
 
-    lc <= '1' when out_memre.OP = OP_AFC or out_memre.OP = OP_COP else '0';
+    lc <= '1' when out_memre.OP = OP_AFC 
+                or out_memre.OP = OP_COP 
+                or out_memre.OP = OP_ADD
+                or out_memre.OP = OP_MUL 
+                or out_memre.OP = OP_DIV 
+                or out_memre.OP = OP_SOU else '0';
 
 end Behavioral;
