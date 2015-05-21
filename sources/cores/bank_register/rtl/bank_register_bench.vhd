@@ -18,12 +18,12 @@ architecture behavioral of bank_register_bench is
 			clk : in std_logic;
 			rst : in std_logic;
 			w : in std_logic;
-			data : in std_logic_vector(REG_SIZE-1 downto 0);
+			data : in unsigned(REG_SIZE-1 downto 0);
 			reg_a : in integer range 0 to REG_COUNT-1;
 			reg_b : in integer range 0 to REG_COUNT-1;
 			reg_w : in integer range 0 to REG_COUNT-1;
-			qa : out std_logic_vector(REG_SIZE-1 downto 0);
-			qb : out std_logic_vector(REG_SIZE-1 downto 0)
+			qa : out unsigned(REG_SIZE-1 downto 0);
+			qb : out unsigned(REG_SIZE-1 downto 0)
 		);
 
 	end component;
@@ -35,12 +35,12 @@ architecture behavioral of bank_register_bench is
 	signal clk : std_logic := '1';
 	signal rst : std_logic := '0';
 	signal w : std_logic := '0';
-	signal data : std_logic_vector(REG_SIZE-1 downto 0);
+	signal data : unsigned(REG_SIZE-1 downto 0);
 	signal reg_a : integer range 0 to REG_COUNT-1 := 0;
 	signal reg_b : integer range 0 to REG_COUNT-1 := 0;
 	signal reg_w : integer range 0 to REG_COUNT-1 := 0;
-	signal qa : std_logic_vector(REG_SIZE-1 downto 0);
-	signal qb : std_logic_vector(REG_SIZE-1 downto 0);
+	signal qa : unsigned(REG_SIZE-1 downto 0);
+	signal qb : unsigned(REG_SIZE-1 downto 0);
 
 begin
 

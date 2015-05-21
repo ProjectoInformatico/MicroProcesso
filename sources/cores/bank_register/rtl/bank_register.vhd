@@ -13,18 +13,18 @@ entity bank_register is
 		clk : in std_logic;
 		rst : in std_logic;
 		w : in std_logic;
-		data : in std_logic_vector(REG_SIZE-1 downto 0);
+		data : in unsigned(REG_SIZE-1 downto 0);
 		reg_a : in integer range 0 to REG_COUNT-1;
 		reg_b : in integer range 0 to REG_COUNT-1;
 		reg_w : in integer range 0 to REG_COUNT-1;
-		qa : out std_logic_vector(REG_SIZE-1 downto 0);
-		qb : out std_logic_vector(REG_SIZE-1 downto 0)
+		qa : out unsigned(REG_SIZE-1 downto 0);
+		qb : out unsigned(REG_SIZE-1 downto 0)
 	);
 end entity ; -- bank_register
 
 architecture behavioral of bank_register is
 
-	subtype reg is std_logic_vector(REG_SIZE-1 downto 0);
+	subtype reg is unsigned(REG_SIZE-1 downto 0);
 	type reg_list is array(0 to REG_COUNT) of reg;
 	signal regs : reg_list := (1=>x"10", others=>x"00");
 
