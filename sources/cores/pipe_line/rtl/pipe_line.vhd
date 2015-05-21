@@ -10,6 +10,7 @@ entity pipe_line is
 
     port(
         clk : in std_logic;
+        rst : in std_logic;
         A_in : in unsigned(SIZE-1 downto 0) ;
         B_in : in unsigned(SIZE-1 downto 0) ;
         C_in : in unsigned(SIZE-1 downto 0) ;
@@ -29,10 +30,17 @@ begin
     pipe_line_main : process( clk )
     begin
         if rising_edge(clk) then
-            A_out <= A_in;
-            B_out <= B_in;
-            C_out <= C_in;
-            OP_out <= OP_in;
+            if rst = '0' then
+                A_out <= (others => '0');
+                B_out <= (others => '0');
+                C_out <= (others => '0');
+                OP_out <= (others => '0');
+            else    
+                A_out <= A_in;
+                B_out <= B_in;
+                C_out <= C_in;
+                OP_out <= OP_in;
+            end if;
         end if ;
     end process ; -- pipe_line_main
 

@@ -14,6 +14,7 @@ architecture behavior of pipe_line_bench is
 
         port(
             clk : in std_logic;
+            rst : in std_logic;
             A_in : in unsigned(SIZE-1 downto 0) ;
             B_in : in unsigned(SIZE-1 downto 0) ;
             C_in : in unsigned(SIZE-1 downto 0) ;
@@ -30,6 +31,7 @@ architecture behavior of pipe_line_bench is
     constant op_size : integer := 8;
 
     signal clk : std_logic := '1';
+    signal rst : std_logic := '1';
     signal A_in, B_in, C_in, OP_in : unsigned(op_size-1 downto 0);
     signal A_out, B_out, C_out, OP_out : unsigned(op_size-1 downto 0);
 
@@ -37,7 +39,7 @@ begin
 
    uut: pipe_line
         generic map(op_size)
-        port map(clk, A_in, B_in, C_in, OP_in, A_out, B_out, C_out, OP_out);
+        port map(clk, rst, A_in, B_in, C_in, OP_in, A_out, B_out, C_out, OP_out);
 
     clk <= not clk after period/2;
 

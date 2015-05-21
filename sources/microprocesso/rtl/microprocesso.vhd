@@ -30,6 +30,7 @@ architecture Behavioral of microprocesso is
         );
         port(
             clk : in std_logic;
+            rst : in std_logic;
             A_in : in unsigned(SIZE-1 downto 0) ;
             B_in : in unsigned(SIZE-1 downto 0) ;
             C_in : in unsigned(SIZE-1 downto 0) ;
@@ -139,7 +140,9 @@ begin
     ip_main : process( clk )
     begin
       if rising_edge(clk) then
-        instruction_pointer <= instruction_pointer + 1;
+        if rst = '1' then
+          instruction_pointer <= instruction_pointer + 1;
+        end if;
       end if ;
     end process ; -- rom_main
 
@@ -147,6 +150,7 @@ begin
     generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
+        rst => rst,
         OP_in => out_rom(31 downto 24),
         A_in => out_rom(23 downto 16),
         B_in => out_rom(15 downto 8),
@@ -185,6 +189,7 @@ begin
     generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
+        rst => rst,
         OP_in => out_lidi.OP,
         A_in => out_lidi.A,
         B_in => in_diex.B,
@@ -218,6 +223,7 @@ begin
     generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
+        rst => rst,
         OP_in => out_diex.OP,
         A_in => out_diex.A,
         B_in => in_exmem.B,
@@ -249,6 +255,7 @@ begin
     generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
+        rst => rst,
         OP_in => out_exmem.OP,
         A_in => out_exmem.A,
         B_in => in_memre.B,
