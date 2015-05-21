@@ -74,9 +74,25 @@ architecture Behavioral of microprocesso is
         );
     end component;
 
+    component ram
+        generic(
+            WORD_COUNT : positive;
+            WORD_SIZE : positive
+        );
+        port(
+          clk : in std_logic;
+          rst : in std_logic;
+          rw : in std_logic;
+          addr : in integer range 0 to WORD_COUNT-1;
+          rin_ram : in unsigned(WORD_SIZE-1 downto 0) ;
+          rout_ram : out unsigned(WORD_SIZE-1 downto 0)
+        );
+    end component;
+
     -- Constants
     constant INSTRUCTION_SIZE : integer := 32;
     constant ROM_SIZE : integer := 256;
+    constant RAM_SIZE : integer := 265;
     constant REG_SIZE : integer := 8;
     constant REG_COUNT : integer := 16;
 
@@ -101,11 +117,15 @@ architecture Behavioral of microprocesso is
     -- Instanciation
     signal instruction_pointer : integer := 0;
     signal out_rom : unsigned(INSTRUCTION_SIZE-1 downto 0);
-    signal out_lidi, out_diex, in_diex, out_exmem, in_exmem, out_memre : in_out_pipe_line;
-    signal lc : std_logic := '1';
+    signal out_lidi, out_diex, in_diex, out_exmem, in_exmem, out_memre, in_memre : in_out_pipe_line;
     signal mux_qa : unsigned(REG_SIZE-1 downto 0);
     signal mux_alu : unsigned(REG_SIZE-1 downto 0);
+    signal mux_ram : unsigned(REG_SIZE-1 downto 0);    
+
+    signal lc : std_logic := '1';
     signal lc_in_alu : std_logic_vector(2 downto 0);
+    signal lc_ram : std_logic := '1';
+
 begin
     -- Composants
     rom1 : rom
@@ -194,13 +214,29 @@ begin
         OP_out => out_exmem.OP
     );
 
+    lc_ram <= '1' when out_exmem.op = OP_LOAD; 
+
+    ram1: ram
+    generic map (RAM_SIZE,REG_SIZE)
+    port map(
+        clk => clk,
+        rst => rst,
+        rw => lc_ram,
+        addr => to_integer(out_exmem.B), 
+        rin_ram => (others =>'0'),
+        rout_ram => mux_ram
+    );
+
+    in_memre.B <= mux_ram when out_exmem.op = OP_LOAD 
+                  else out_exmem.B;
+
     memre : pipe_line
     generic map(INSTRUCTION_SIZE/4)
     port map(
         clk => clk,
         OP_in => out_exmem.OP,
         A_in => out_exmem.A,
-        B_in => out_exmem.B,
+        B_in => in_memre.B,
         C_in => (others =>'0'),
         A_out => out_memre.A,
         B_out => out_memre.B,
@@ -212,6 +248,7 @@ begin
                 or out_memre.OP = OP_ADD
                 or out_memre.OP = OP_MUL 
                 or out_memre.OP = OP_DIV 
-                or out_memre.OP = OP_SOU else '0';
+                or out_memre.OP = OP_SOU 
+                or out_memre.OP = OP_LOAD else '0';
 
 end Behavioral;

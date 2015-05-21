@@ -19,8 +19,8 @@ architecture behavioral of ram_bench is
 			rst : in std_logic;
 			rw : in std_logic;
 			addr : in integer range 0 to WORD_COUNT-1;
-			rin_ram : in std_logic_vector(WORD_SIZE-1 downto 0) ;
-			rout_ram : out std_logic_vector(WORD_SIZE-1 downto 0)
+			rin_ram : in unsigned(WORD_SIZE-1 downto 0) ;
+			rout_ram : out unsigned(WORD_SIZE-1 downto 0)
 		);
 
 	end component;
@@ -33,8 +33,8 @@ architecture behavioral of ram_bench is
 	signal rst : std_logic := '0';
 	signal rw : std_logic := '1'; -- read by default
 	signal addr : integer range 0 to WORD_COUNT-1;
-	signal rin_ram : std_logic_vector(WORD_SIZE-1 downto 0);
-	signal rout_ram : std_logic_vector(WORD_SIZE-1 downto 0);
+	signal rin_ram : unsigned(WORD_SIZE-1 downto 0);
+	signal rout_ram : unsigned(WORD_SIZE-1 downto 0);
 
 begin
 

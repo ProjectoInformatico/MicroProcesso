@@ -14,18 +14,18 @@ entity ram is
 		rst : in std_logic;
 		rw : in std_logic;
 		addr : in integer range 0 to WORD_COUNT-1;
-		rin_ram : in std_logic_vector(WORD_SIZE-1 downto 0) ;
-		rout_ram : out std_logic_vector(WORD_SIZE-1 downto 0)
+		rin_ram : in unsigned(WORD_SIZE-1 downto 0) ;
+		rout_ram : out unsigned(WORD_SIZE-1 downto 0)
 	);
 end entity ; -- ram
 
 architecture behavioral of ram is
 
-	subtype word is std_logic_vector(WORD_SIZE-1 downto 0);
+	subtype word is unsigned(WORD_SIZE-1 downto 0);
 	type word_list is array(0 to WORD_COUNT-1) of word;
 	
-	signal words : word_list;
-	signal sortie : std_logic_vector(WORD_SIZE-1 downto 0) ;
+	signal words : word_list := (others => x"f0");
+	signal sortie : unsigned(WORD_SIZE-1 downto 0) ;
 
 begin
 
