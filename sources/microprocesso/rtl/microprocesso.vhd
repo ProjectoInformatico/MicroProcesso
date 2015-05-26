@@ -176,7 +176,7 @@ begin
     );
 
     -- mux n°1  
-    in_diex.B <= mux_qa when out_lidi.op = OP_COP 
+    in_diex.B <= mux_qa when out_lidi.op = OP_AFC
                           or out_lidi.OP = OP_COP 
                           or out_lidi.OP = OP_ADD
                           or out_lidi.OP = OP_MUL 
