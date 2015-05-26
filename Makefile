@@ -25,7 +25,7 @@ endef
 
 ################################## STARTING RULE ###############################
 
-all: simulations
+all: simulations targets
 
 ################################## GLOBALS  ####################################
 
@@ -146,32 +146,32 @@ load: binary/counter/system.bit
 # Post-map simulation model
 %_map.vhd: %.ncd %.pcf
 	@echo [NTG] $@ \> $@.out
-	@cd $(dir $@) && netgen -tm $(TOP) -s 1 -pcf $(abspath $(word 2, $^)) \
+	@cd $(dir $@) && netgen -tm $(TOP) -s 3 -pcf $(abspath $(word 2, $^)) \
 		-rpw 100 -tpw 0 -ar Structure -w -ofmt vhdl -sim -w \
 		$(abspath $<) $(abspath $@) &> $(abspath $@).out
 
 %_map.v: %.ncd %.pcf
 	@echo [NTG] $@ \> $@.out
-	@cd $(dir $@) && netgen -tm $(TOP) -s 1 -pcf $(abspath $(word 2, $^)) \
+	@cd $(dir $@) && netgen -tm $(TOP) -s 3 -pcf $(abspath $(word 2, $^)) \
 		-w -ofmt verilog -sim -w $(abspath $<) $(abspath $@) &> $(abspath $@).out
 
 # Post-place & route static timing
 %.twr: %.routed.ncd %.pcf
 	@echo [TRE] $@ \> $@.out
-	cd $(dir $@) && trce -v 3 -s 1 -n 3 -fastpaths -xml \
+	cd $(dir $@) && trce -v 3 -s 3 -n 3 -fastpaths -xml \
 		$(abspath $(patsubst %.twr, %.twx, $@)) $(abspath $<) \
 		-o $(abspath $@) $(abspath $(word 2, $^)) &> $(abspath $@).out
 
 # Post-place & route simulation model
 %_timesim.vhd: %.routed.ncd %.pcf
 	@echo [NTG] $@ \> $@.out
-	@cd $(dir $@) && netgen -s 1 -pcf $(abspath $(word 2, $^)) -rpw 100 -tpw 0 \
+	@cd $(dir $@) && netgen -s 3 -pcf $(abspath $(word 2, $^)) -rpw 100 -tpw 0 \
 		-ar Structure -tm $(TOP) -insert_pp_buffers true -w -ofmt vhdl -sim \
 		$(abspath $<) $(abspath $@) &> $(abspath $@).out
 
 %_timesim.v: %.routed.ncd %.pcf
 	@echo [NTG] $@ \> $@.out
-	@cd $(dir $@) && netgen -s 1 -pcf $(abspath $(word 2, $^)) -rpw 100 -tpw 0 \
+	@cd $(dir $@) && netgen -s 3 -pcf $(abspath $(word 2, $^)) -rpw 100 -tpw 0 \
 		-ar Structure -tm $(TOP) -insert_pp_buffers true -w -ofmt verilog -sim \
 		$(abspath $<) $(abspath $@) &> $(abspath $@).out
 

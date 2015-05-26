@@ -12,6 +12,8 @@ dir	:= $(d)/bank_register
 include	$(dir)/rules.mk
 dir	:= $(d)/alu
 include	$(dir)/rules.mk
+dir	:= $(d)/program_counter
+include	$(dir)/rules.mk
 
 d		:= $(dirstack_$(sp))
 sp		:= $(basename $(sp))
