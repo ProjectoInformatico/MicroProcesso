@@ -12,6 +12,18 @@ end microprocesso;
 architecture Behavioral of microprocesso is
 
     -- Description des composants utilisés
+    component program_counter
+        generic(
+            ROM_SIZE : positive
+        );
+        port(
+            selector : in std_logic_vector(1 downto 0);
+            pc : in integer range 0 to ROM_SIZE-1;
+            jump : in integer range 0 to ROM_SIZE-1;
+            sortie : out integer range 0 to ROM_SIZE-1
+        );
+    end component;
+
     component rom
         generic(
             WORD_COUNT : positive;
@@ -118,7 +130,8 @@ architecture Behavioral of microprocesso is
     end record;
 
     -- Instanciation
-    signal instruction_pointer : integer := 0;
+    signal instruction_pointer : integer range 0 to ROM_SIZE-1;
+    signal ip_in, ip_out, jump_in : integer range 0 to ROM_SIZE-1;
     signal out_rom : unsigned(INSTRUCTION_SIZE-1 downto 0) := (others => '0');
     signal out_lidi, out_diex, in_diex, out_exmem, in_exmem, out_memre, in_memre : in_out_pipe_line;
     
@@ -130,21 +143,30 @@ architecture Behavioral of microprocesso is
     signal lc : std_logic := '1';
     signal lc_in_alu : std_logic_vector(2 downto 0);
     signal lc_ram : std_logic := '1';
+    signal selector_pc : std_logic_vector(1 downto 0) := (others => '0');
 
 begin
     -- Composants
-    rom1 : rom
-    generic map(ROM_SIZE,INSTRUCTION_SIZE)
-    port map(clk,instruction_pointer,out_rom);
+    program_counter1 : program_counter
+    generic map(ROM_SIZE)
+    port map(selector_pc, ip_in, jump_in, ip_out);
+
+    selector_pc <= "01"; 
 
     ip_main : process( clk )
     begin
       if rising_edge(clk) then
         if rst = '1' then
-          instruction_pointer <= instruction_pointer + 1;
+          instruction_pointer <= ip_out;
+          ip_in <= instruction_pointer;
         end if;
       end if ;
     end process ; -- rom_main
+
+    rom1 : rom
+    generic map(ROM_SIZE,INSTRUCTION_SIZE)
+    port map(clk,instruction_pointer,out_rom);
+
 
     lidi : pipe_line
     generic map(INSTRUCTION_SIZE/4)
